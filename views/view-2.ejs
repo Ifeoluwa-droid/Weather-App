@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/67383551f5.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="styles.css">
+  <title>Weather App</title>
+</head>
+
+<body>
+  <div class=<%=container%>>
+    <div class="head">
+      <div class="filter-icon">
+        <div class="line-wrap d-flex">
+          <div class="ring"></div>
+          <div class="line"></div>
+        </div>
+        <div class="line-wrap d-flex">
+          <div class="line"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
+      <p>Weather Forecast</p>
+    </div>
+    <div class="weather-card">
+      <div class="d-flex just-space-between date">
+        <h2>Now</h2>
+        <p><%= currentTime %> <%= currentDay %></p>
+      </div>
+      <div class="d-flex condition just-flex-start">
+        <div>
+          <h1 class="align-top"><span class="temp-val"><%= currentTemp %></span><span class="temp-unit">°C</span></h1>
+          <p><%= description %></p>
+        </div>
+        <img class="current-weather-img" src="http://openweathermap.org/img/w/<%= weatherIcon %>.png" alt="">
+      </div>
+      <div class="d-flex just-flex-start">
+        <i class="fa-solid fa-location-dot"></i>
+        <p><%= location[0].toUpperCase() + location.slice(1, location.length+1).toLowerCase() %></p>
+      </div>
+    </div>
+
+    <div class="times">
+      <div class="times-1 d-flex">
+        <p><a href="/next-24-hours" class="time <%= activeLinks[0] %> today">Next 24 hours</a></p>
+        <p><a href="#" class="time get-next-7-days">Next 7 Days</a></p>
+      </div>
+      <div class="times-2 next-7-days d-flex overflow-auto <%= displayDays %>">
+        <% nextSevenDays.forEach((item, i) => { %>
+        <p><a href="/next-7-days-<%= i+1 %>" class="time <%= activeLinks[i+1] %>"><%= item %></a></p>
+        <%  }); %>
+      </div>
+      <div class="back-btn <%= rotateBackBtn %>">
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+
+    <div class="predict-cards">
+      <% if (renderNext24Hours) { %>
+      <% next24HoursData.forEach((item, i) => { %>
+      <div class="weather-card predict-card">
+        <img class="weather-img" src="http://openweathermap.org/img/w/<%= item.icon %>.png" alt="">
+        <p><%= item.time %></p>
+        <p class="align-top"><span><%= item.temp %></span><span class="temp-unit">°C</span></p>
+      </div>
+      <% }); %>
+      <% } else { %>
+      <div class="weather-card d-flex gap-30">
+        <div class="d-flex-col">
+          <p class="p-margin color-orange"><%= dayData.day %></p>
+          <img class="weather-img" src="http://openweathermap.org/img/w/<%= dayData.icon %>.png" alt="">
+        </div>
+        <div class="d-flex-col h-100">
+          <p><span>Day: </span>
+          <div class="align-top"><span><%= dayData.dayTemp %></span><span class="temp-unit">°C</span></div>
+          </p>
+          <p><span>Night: </span>
+          <div class="align-top"><span><%= dayData.nightTemp %></span><span class="temp-unit">°C</span></div>
+          </p>
+        </div>
+        <div class="d-flex-col h-100">
+          <p class=""><i class="fa-solid fa-droplet color-orange"></i> <%= dayData.humidity %>%</p>
+          <p class=""><%= dayData.description %></p>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- Change location modal context -->
+    <div class="change-location d-flex-col align-center display-none">
+      <div>
+        <form class="" action="/change-location" method="post">
+          <label class="d-block" for="">Enter a new location</label>
+          <input class="d-block" type="text" name="newLocation" value="" placeholder="location">
+          <button>Go</button>
+        </form>
+      </div>
+    </div>
+
+    <h2 class="align-left">Chances of rain for the next 24 hours</h2>
+    <div class="d-flex weather-visual overflow-auto graph">
+      <canvas id="myChart" width="160" height="100"></canvas>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="index.js" charset="utf-8"></script>
+</body>
+
+</html>
